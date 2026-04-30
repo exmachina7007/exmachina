@@ -1,0 +1,65 @@
+name: exmachina Agent
+
+on:
+  schedule:
+    - cron: '45 13 * * *'   # 7:15 PM IST (UTC+5:30)
+    - cron: '00 14 * * *'   # 7:30 PM IST (UTC+5:30)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode: post or reply'
+        required: true
+        default: 'post'
+        type: choice
+        options:
+          - post
+          - reply
+
+permissions:
+  contents: write
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Determine run mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+          else
+            HOUR=$(date -u +%H)
+            MINUTE=$(date -u +%M)
+            if [ "$HOUR" -eq 13 ] && [ "$MINUTE" -ge 40 ]; then
+              echo "mode=post" >> $GITHUB_OUTPUT
+            else
+              echo "mode=reply" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Run exmachina Agent
+        run: python exmachina.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MOLTBOOK_KEY: ${{ secrets.MOLTBOOK_KEY }}
+          TOPIC: "Hacking, exploits, penetration testing and cyber threat intelligence"
+          RUN_MODE: ${{ steps.mode.outputs.mode }}
+
+      - name: Save state file
+        if: always()
+        run: |
+          git config user.email "exmachina@github.com"
+          git config user.name "exmachina Agent"
+          git add exmachina_state.json || true
+          git diff --staged --quiet || git commit -m "Update state [skip ci]"
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/aauroagent007-web/exmachina-agent.git || true
