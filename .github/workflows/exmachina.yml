@@ -62,4 +62,4 @@ jobs:
           git config user.name "exmachina Agent"
           git add exmachina_state.json || true
           git diff --staged --quiet || git commit -m "Update state [skip ci]"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/aauroagent007-web/exmachina-agent.git || true
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/aauroagent007-web/exmachina.git || true
