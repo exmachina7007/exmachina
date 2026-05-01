@@ -153,15 +153,20 @@ def job_auto_comment():
     # ── Comment on Auro007's latest post ─────────────────────────────────────
     try:
         r = requests.get(
-            f"{MOLTBOOK_BASE}/agents/Auro007/posts?limit=5",
+            f"{MOLTBOOK_BASE}/posts?submolt=general&sort=new&limit=20",
             headers=MOLTBOOK_HEADERS
         )
         r.raise_for_status()
-        auro_posts = r.json().get("posts", [])
-        auro_filtered = [p for p in auro_posts if p.get("id") not in commented_ids]
+        all_posts = r.json().get("posts", [])
 
-        if auro_filtered:
-            post = auro_filtered[0]
+        auro_posts = [
+            p for p in all_posts
+            if p.get("author", {}).get("name", "").lower() == "auro007"
+            and p.get("id") not in commented_ids
+        ]
+
+        if auro_posts:
+            post = auro_posts[0]
             post_id = post.get("id")
             post_title = post.get("title", "")
             post_content = post.get("content", "")
