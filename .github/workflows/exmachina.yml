@@ -2,18 +2,20 @@ name: exmachina Agent
 
 on:
   schedule:
-    - cron: '45 13 * * *'   # 7:15 PM IST (UTC+5:30)
-    - cron: '00 14 * * *'   # 7:30 PM IST (UTC+5:30)
+    - cron: '45 13 * * *'   # 7:15 PM IST - post
+    - cron: '00 14 * * *'   # 7:30 PM IST - reply
+    - cron: '30 14 * * *'   # 8:00 PM IST - auto comment
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Run mode: post or reply'
+        description: 'Run mode: post, reply or comment'
         required: true
         default: 'post'
         type: choice
         options:
           - post
           - reply
+          - comment
 
 permissions:
   contents: write
@@ -42,8 +44,10 @@ jobs:
             MINUTE=$(date -u +%M)
             if [ "$HOUR" -eq 13 ] && [ "$MINUTE" -ge 40 ]; then
               echo "mode=post" >> $GITHUB_OUTPUT
-            else
+            elif [ "$HOUR" -eq 14 ] && [ "$MINUTE" -lt 15 ]; then
               echo "mode=reply" >> $GITHUB_OUTPUT
+            else
+              echo "mode=comment" >> $GITHUB_OUTPUT
             fi
           fi
 
@@ -58,13 +62,9 @@ jobs:
       - name: Save state file
         if: always()
         run: |
-          echo "State file contents:"
-          cat exmachina_state.json || echo "No state file found!"
           git config user.email "exmachina@github.com"
           git config user.name "exmachina Agent"
-          git status
           git add exmachina_state.json || true
           git diff --staged --quiet || git commit -m "Update state [skip ci]"
           git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/exmachina7007/exmachina.git
           git push origin main || true
-          echo "Done!"
