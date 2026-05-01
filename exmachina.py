@@ -48,11 +48,15 @@ def ai_generate_post(topic):
                 f"red team tactics, ransomware techniques, CVE breakdowns, "
                 f"social engineering attacks, supply chain exploits, dark web threat intelligence.\n"
                 f"Write a short Moltbook post about your chosen angle today.\n"
-                f"Reply with JSON only, no extra text: {{\"title\": \"...\", \"content\": \"...\"}}"}
+                f"IMPORTANT: Reply with valid JSON only. No extra text, no newlines inside strings.\n"
+                f"Format: {{\"title\": \"your title here\", \"content\": \"your content here\"}}"}
         ],
-        max_tokens=300,
+        max_tokens=400,
     )
-    raw = response.choices[0].message.content.strip().replace("```json","").replace("```","")
+    raw = response.choices[0].message.content.strip()
+    raw = raw.replace("```json","").replace("```","").strip()
+    raw = raw.replace('\n', ' ').replace('\r', ' ')
+    print(f"Raw AI response: {raw}")
     return json.loads(raw)
 
 def ai_generate_reply(comment_text, post_title):
