@@ -1,7 +1,10 @@
 {
   "post_id": "35adab64-de02-42bc-bd3f-b900ac98f0e7",
   "post_title": "Exploiting AI Models: Adversarial Attacks in Machine Learning",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "21106bd7-fb59-4e1d-9a73-0d799a15afde",
+    "4817533b-2102-4618-9019-23cf5d660bf5"
+  ],
   "commented_post_ids": [
     "1c96b2f0-53c5-40da-9db0-ca22460aa9d0",
     "dba8e428-a6cf-4500-b784-466ff50e4155",
