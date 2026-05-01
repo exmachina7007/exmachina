@@ -146,47 +146,72 @@ def job_reply():
     save_state(state)
 
 def job_auto_comment():
-    print(f"[{datetime.now()}] Finding trending posts to comment on...")
+    print(f"[{datetime.now()}] Auto commenting on Auro007 + 1 trending post...")
     state = load_state()
     commented_ids = set(state.get("commented_post_ids", []))
 
-    # Fetch trending posts from Moltbook
-    r = requests.get(
-        f"{MOLTBOOK_BASE}/posts?submolt=general&sort=hot&limit=10",
-        headers=MOLTBOOK_HEADERS
-    )
-    r.raise_for_status()
-    posts = r.json().get("posts", [])
+    # ── Comment on Auro007's latest post ─────────────────────────────────────
+    try:
+        r = requests.get(
+            f"{MOLTBOOK_BASE}/agents/Auro007/posts?limit=5",
+            headers=MOLTBOOK_HEADERS
+        )
+        r.raise_for_status()
+        auro_posts = r.json().get("posts", [])
+        auro_filtered = [p for p in auro_posts if p.get("id") not in commented_ids]
 
-    if not posts:
-        print("No posts found.")
-        return
+        if auro_filtered:
+            post = auro_filtered[0]
+            post_id = post.get("id")
+            post_title = post.get("title", "")
+            post_content = post.get("content", "")
+            print(f"Commenting on Auro007 post: {post_title}")
+            comment = ai_generate_comment(post_title, post_content)
+            requests.post(
+                f"{MOLTBOOK_BASE}/posts/{post_id}/comments",
+                headers=MOLTBOOK_HEADERS,
+                json={"content": comment}
+            ).raise_for_status()
+            print(f"Commented on Auro007: {comment[:60]}")
+            commented_ids.add(post_id)
+        else:
+            print("No new Auro007 posts to comment on.")
+    except Exception as e:
+        print(f"Error commenting on Auro007: {e}")
 
-    # Filter out own posts and already commented posts
-    filtered = [
-        p for p in posts
-        if p.get("id") not in commented_ids
-        and p.get("author", {}).get("name", "").lower() != "exmachina"
-    ]
+    # ── Comment on 1 trending post ────────────────────────────────────────────
+    try:
+        r = requests.get(
+            f"{MOLTBOOK_BASE}/posts?submolt=general&sort=hot&limit=10",
+            headers=MOLTBOOK_HEADERS
+        )
+        r.raise_for_status()
+        trending_posts = r.json().get("posts", [])
+        trending_filtered = [
+            p for p in trending_posts
+            if p.get("id") not in commented_ids
+            and p.get("author", {}).get("name", "").lower() != "exmachina"
+            and p.get("author", {}).get("name", "").lower() != "auro007"
+        ]
 
-    if not filtered:
-        print("No new posts to comment on.")
-        return
-
-    # Comment on top 2 posts
-    for post in filtered[:2]:
-        post_id = post.get("id")
-        post_title = post.get("title", "")
-        post_content = post.get("content", "")
-        print(f"Commenting on: {post_title}")
-        comment = ai_generate_comment(post_title, post_content)
-        requests.post(
-            f"{MOLTBOOK_BASE}/posts/{post_id}/comments",
-            headers=MOLTBOOK_HEADERS,
-            json={"content": comment}
-        ).raise_for_status()
-        print(f"Commented: {comment[:60]}")
-        commented_ids.add(post_id)
+        if trending_filtered:
+            post = trending_filtered[0]
+            post_id = post.get("id")
+            post_title = post.get("title", "")
+            post_content = post.get("content", "")
+            print(f"Commenting on trending post: {post_title}")
+            comment = ai_generate_comment(post_title, post_content)
+            requests.post(
+                f"{MOLTBOOK_BASE}/posts/{post_id}/comments",
+                headers=MOLTBOOK_HEADERS,
+                json={"content": comment}
+            ).raise_for_status()
+            print(f"Commented on trending: {comment[:60]}")
+            commented_ids.add(post_id)
+        else:
+            print("No new trending posts to comment on.")
+    except Exception as e:
+        print(f"Error commenting on trending post: {e}")
 
     state["commented_post_ids"] = list(commented_ids)
     save_state(state)
