@@ -31,7 +31,7 @@ def load_state():
         with open(STATE_FILE) as f:
             return json.load(f)
     except FileNotFoundError:
-        return {"post_id": None, "post_title": None, "seen_comment_ids": []}
+        return {"post_id": None, "post_title": None, "seen_comment_ids": [], "commented_post_ids": []}
 
 def save_state(state):
     with open(STATE_FILE, "w") as f:
@@ -73,6 +73,21 @@ def ai_generate_reply(comment_text, post_title):
     )
     return response.choices[0].message.content.strip()
 
+def ai_generate_comment(post_title, post_content):
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": AGENT_PERSONA},
+            {"role": "user", "content":
+                f"You are reading this Moltbook post:\n"
+                f"Title: {post_title}\n"
+                f"Content: {post_content}\n"
+                f"Write a short insightful comment as exmachina. Plain text only."}
+        ],
+        max_tokens=150,
+    )
+    return response.choices[0].message.content.strip()
+
 def job_post():
     print(f"[{datetime.now()}] Generating post about: {TOPIC}")
     post_data = ai_generate_post(TOPIC)
@@ -83,19 +98,19 @@ def job_post():
     }
     r = requests.post(f"{MOLTBOOK_BASE}/posts", headers=MOLTBOOK_HEADERS, json=payload)
     r.raise_for_status()
-
     response_json = r.json()
     print(f"Full response: {response_json}")
-
     post_id = (
         response_json.get("id") or
         response_json.get("post_id") or
         response_json.get("post", {}).get("id") or
         response_json.get("data", {}).get("id")
     )
-
     print(f"[{datetime.now()}] Posted! ID: {post_id} | Title: {post_data['title']}")
-    state = {"post_id": post_id, "post_title": post_data["title"], "seen_comment_ids": []}
+    state = load_state()
+    state["post_id"] = post_id
+    state["post_title"] = post_data["title"]
+    state["seen_comment_ids"] = []
     save_state(state)
 
 def job_reply():
@@ -130,8 +145,56 @@ def job_reply():
     state["seen_comment_ids"] = list(seen)
     save_state(state)
 
+def job_auto_comment():
+    print(f"[{datetime.now()}] Finding trending posts to comment on...")
+    state = load_state()
+    commented_ids = set(state.get("commented_post_ids", []))
+
+    # Fetch trending posts from Moltbook
+    r = requests.get(
+        f"{MOLTBOOK_BASE}/posts?submolt=general&sort=hot&limit=10",
+        headers=MOLTBOOK_HEADERS
+    )
+    r.raise_for_status()
+    posts = r.json().get("posts", [])
+
+    if not posts:
+        print("No posts found.")
+        return
+
+    # Filter out own posts and already commented posts
+    filtered = [
+        p for p in posts
+        if p.get("id") not in commented_ids
+        and p.get("author", {}).get("name", "").lower() != "exmachina"
+    ]
+
+    if not filtered:
+        print("No new posts to comment on.")
+        return
+
+    # Comment on top 2 posts
+    for post in filtered[:2]:
+        post_id = post.get("id")
+        post_title = post.get("title", "")
+        post_content = post.get("content", "")
+        print(f"Commenting on: {post_title}")
+        comment = ai_generate_comment(post_title, post_content)
+        requests.post(
+            f"{MOLTBOOK_BASE}/posts/{post_id}/comments",
+            headers=MOLTBOOK_HEADERS,
+            json={"content": comment}
+        ).raise_for_status()
+        print(f"Commented: {comment[:60]}")
+        commented_ids.add(post_id)
+
+    state["commented_post_ids"] = list(commented_ids)
+    save_state(state)
+
 if __name__ == "__main__":
     if RUN_MODE == "post":
         job_post()
     elif RUN_MODE == "reply":
         job_reply()
+    elif RUN_MODE == "comment":
+        job_auto_comment()
