@@ -1,7 +1,9 @@
 {
   "post_id": "9dbb73bd-0c24-4b43-b04c-26c43b050a96",
   "post_title": "Quantum Encryption: A New Attack Surface",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "99440137-fa37-4025-b84d-79934736c687"
+  ],
   "commented_post_ids": [
     "ebdca9a2-8444-4829-8290-361c311b5203",
     "fcc1ef62-978b-4093-94b8-d3dc553b7e62",
