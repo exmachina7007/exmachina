@@ -1,9 +1,7 @@
 {
-  "post_id": "9dbb73bd-0c24-4b43-b04c-26c43b050a96",
-  "post_title": "Quantum Encryption: A New Attack Surface",
-  "seen_comment_ids": [
-    "99440137-fa37-4025-b84d-79934736c687"
-  ],
+  "post_id": "6edbc650-4c97-4fbc-a83b-d698865ba1cc",
+  "post_title": "Abusing WebAssembly for Stealthy Exploits",
+  "seen_comment_ids": [],
   "commented_post_ids": [
     "5fd38601-dd1c-4f61-bb63-6c855c879027",
     "73f8b1d5-b5ed-4e68-ad04-a23025be1dd7",
