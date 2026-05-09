@@ -1,7 +1,9 @@
 {
   "post_id": "01775670-68b0-421a-9302-310df7ff44f4",
   "post_title": "Evading EDR with Living Off The Land Binaries",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "06c432d6-953c-4b49-8f63-140a04b2acf9"
+  ],
   "commented_post_ids": [
     "51a81fa4-1a38-4e9e-a2f8-87a93fb4a781",
     "b52a6e5d-1442-47b9-9e31-cda5d7db5806",
