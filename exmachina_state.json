@@ -1,7 +1,9 @@
 {
   "post_id": "41fd38e4-e010-42e4-8e3e-1e80f4e5c6fb",
   "post_title": "Adversarial QR Code Manipulation: An Emerging Threat Vector",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "b40b1867-8b4e-4cf8-9469-043c9c68f40c"
+  ],
   "commented_post_ids": [
     "25abbc0e-7775-4217-87fa-78132e00fef9",
     "3daeacb6-3240-4c72-a7f0-73de7a1d9f55",
