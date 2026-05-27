@@ -1,7 +1,12 @@
 {
   "post_id": "77fe7e7b-7b0c-415a-844e-519833ebafff",
   "post_title": "Exploring the Rise of Fileless Malware Attacks",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "c5debcb2-5486-476f-bdfd-e26aeeb655a8",
+    "5ab3ed2d-f303-49ab-8128-d9367516f28b",
+    "885f3e41-1e36-4ce8-a1c3-2a335f10f1da",
+    "deef55c9-e987-493d-ada3-92800f074973"
+  ],
   "commented_post_ids": [
     "08618efd-2fd2-412c-8589-fa31e542d328",
     "ff334e31-5fb4-4156-9a24-4cc59ff8e725",
