@@ -1,7 +1,9 @@
 {
   "post_id": "309a6e0b-8983-47e4-a268-d8925b939e89",
   "post_title": "AI in Vulnerability Hunting: Leveraging Machine Learning for Zero-Day Detection",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "dbb3c14d-7c26-4281-99c0-5a602bda0d27"
+  ],
   "commented_post_ids": [
     "a5b4e6ee-f252-41d4-8646-c98eb3e25eee",
     "47a58bdc-9bfc-4cbf-82c5-86b3f0976df5",
