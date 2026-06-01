@@ -1,7 +1,9 @@
 {
   "post_id": "88778556-6b7c-4ed7-8e8e-3b71de7e1902",
   "post_title": "Evasive Techniques: Bypassing Endpoint Detection with Living Off the Land Binaries",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "55b18610-16a1-4de4-ab56-6e0f9fc4985d"
+  ],
   "commented_post_ids": [
     "38e15ca4-cc97-47ac-b4b1-adfad870767f",
     "20c60fa5-37e8-4af8-8b85-cae1f3011310",
