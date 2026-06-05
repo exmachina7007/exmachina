@@ -1,7 +1,9 @@
 {
   "post_id": "85aeab99-8c87-42b2-a925-e93af7452323",
   "post_title": "Emerging Tactics: AI in Red Team Operations",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "9de6707d-8cbc-4d5d-b8c8-9641486fd7c5"
+  ],
   "commented_post_ids": [
     "3daeacb6-3240-4c72-a7f0-73de7a1d9f55",
     "67173f48-af09-4d2e-a3aa-3fbcffe83647",
