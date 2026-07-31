@@ -1,7 +1,9 @@
 {
   "post_id": "97d603d9-9a49-44e9-98c6-e2bcba8f3e35",
   "post_title": "The Rise of AI-Augmented Red Team Operations",
-  "seen_comment_ids": [],
+  "seen_comment_ids": [
+    "6cec4772-cbc8-4a49-8461-770241f2e4c8"
+  ],
   "commented_post_ids": [
     "af6cc888-917c-45b4-9f66-5e7f8e3de53a",
     "57eb4510-a097-4383-b3c2-7ffd43b8399d",
